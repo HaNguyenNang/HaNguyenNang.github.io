@@ -1,0 +1,259 @@
+---
+import Base from '../layouts/Base.astro';
+import Avatar from '../components/Avatar.astro';
+import { profile, activeSocials } from '../data/profile';
+import { url } from '../data/utils';
+---
+
+<Base title="Giới thiệu" description={`Giới thiệu về ${profile.name} — ${profile.title}`}>
+  <div class="container">
+    <section class="intro">
+      <div>
+        <span class="eyebrow">Giới thiệu</span>
+        <h1>Xin chào, tôi là {profile.name}.</h1>
+        <div class="bio">{profile.bio.map((p) => <p>{p}</p>)}</div>
+        <div class="actions">
+          {profile.cv && <a href={url(profile.cv)} class="btn" download>Tải CV</a>}
+          {profile.email && <a href={`mailto:${profile.email}`} class="btn ghost">{profile.email}</a>}
+        </div>
+      </div>
+      <div class="intro-art">
+        <Avatar size={340} eager />
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block-head">
+        <span class="eyebrow">01</span>
+        <h2>Kỹ năng</h2>
+      </div>
+      <div class="skills">
+        {
+          profile.skills.map((group) => (
+            <div class="skill-group">
+              <h3>{group.group}</h3>
+              <ul>
+                {group.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block-head">
+        <span class="eyebrow">02</span>
+        <h2>Kinh nghiệm</h2>
+      </div>
+      <ol class="timeline">
+        {
+          profile.experience.map((e) => (
+            <li>
+              <span class="time">{e.time}</span>
+              <div>
+                <h3>{e.role}</h3>
+                <p class="place">{e.place}</p>
+                <p class="muted">{e.desc}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="block">
+      <div class="block-head">
+        <span class="eyebrow">03</span>
+        <h2>Liên hệ</h2>
+      </div>
+      {
+        activeSocials.length || profile.email ? (
+          <ul class="socials">
+            {profile.email && (
+              <li>
+                <span>Email</span>
+                <a href={`mailto:${profile.email}`}>{profile.email}</a>
+              </li>
+            )}
+            {activeSocials.map((s) => (
+              <li>
+                <span>{s.label}</span>
+                <a href={s.url} target="_blank" rel="noopener">
+                  {s.url.replace(/^https?:\/\/(www\.)?/, '')} ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="muted">Thông tin liên hệ sẽ được cập nhật sớm.</p>
+        )
+      }
+    </section>
+  </div>
+</Base>
+
+<style>
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 64px;
+    align-items: center;
+    padding-top: 80px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -0.03em;
+    margin: 14px 0 24px;
+  }
+
+  .bio p {
+    font-size: 1.05rem;
+    color: #cdd3de;
+    margin: 0 0 1em;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .intro-art {
+    padding: 0 14px 14px 0;
+  }
+
+  .block {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    border-top: 1px solid var(--line);
+  }
+
+  .block-head h2 {
+    font-size: 1.5rem;
+    margin: 6px 0 0;
+  }
+
+  .skills {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 32px 40px;
+  }
+
+  .skill-group h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--mist);
+    margin-bottom: 12px;
+  }
+
+  .skill-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .skill-group li {
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.97rem;
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .timeline li {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding-bottom: 28px;
+  }
+
+  .time {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--accent);
+    padding-top: 4px;
+  }
+
+  .timeline h3 {
+    font-size: 1.15rem;
+    margin-bottom: 2px;
+  }
+
+  .place {
+    font-weight: 500;
+    color: var(--mist);
+    margin: 0 0 8px;
+  }
+
+  .timeline .muted {
+    margin: 0;
+  }
+
+  .socials {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .socials li {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .socials span {
+    color: var(--muted);
+  }
+
+  .socials a {
+    text-decoration: none;
+    font-weight: 500;
+    word-break: break-all;
+    transition: color 0.2s;
+  }
+
+  .socials a:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 860px) {
+    .intro {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding-top: 40px;
+    }
+
+    .intro-art {
+      order: -1;
+    }
+
+    .intro-art :global(.avatar) {
+      width: min(260px, 70vw);
+    }
+
+    .block {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .timeline li,
+    .socials li {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>

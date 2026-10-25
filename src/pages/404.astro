@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../data/utils';
+---
+
+<Base title="Không tìm thấy trang">
+  <div class="container wrap">
+    <span class="eyebrow">Lỗi 404</span>
+    <h1>Không tìm thấy trang</h1>
+    <p class="muted">Trang bạn đang tìm không tồn tại hoặc đã được di chuyển.</p>
+    <a href={url('/')} class="btn">Về trang chủ</a>
+  </div>
+</Base>
+
+<style>
+  .wrap {
+    padding-top: 120px;
+    padding-bottom: 80px;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin: 12px 0;
+  }
+
+  p {
+    margin: 0 0 32px;
+  }
+</style>

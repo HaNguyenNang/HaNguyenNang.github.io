@@ -1,0 +1,128 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getPosts, url, formatDate, readingTime } from '../../data/utils';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+const { title, description, pubDate, tags, cover } = post.data;
+const { Content } = await render(post);
+---
+
+<Base title={title} description={description} image={cover}>
+  <article class="container post">
+    <header class="page-head">
+      <a href={url('/blog/')} class="back">← Tất cả bài viết</a>
+      <div class="meta">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        <span>·</span>
+        <span>{readingTime(post.body)} phút đọc</span>
+      </div>
+      <h1>{title}</h1>
+      <p>{description}</p>
+      <div class="tags">{tags.map((t) => <span class="tag">{t}</span>)}</div>
+    </header>
+
+    {cover && <img class="cover" src={url(cover)} alt="" />}
+
+    <div class="prose body">
+      <Content />
+    </div>
+
+    <nav class="pager">
+      {
+        older ? (
+          <a href={url(`/blog/${older.id}/`)} class="card">
+            <small>← Bài trước</small>
+            <strong>{older.data.title}</strong>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        newer && (
+          <a href={url(`/blog/${newer.id}/`)} class="card next">
+            <small>Bài sau →</small>
+            <strong>{newer.data.title}</strong>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .post {
+    max-width: 780px;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--mist);
+    margin-top: 16px;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .cover {
+    width: 100%;
+    margin-top: 40px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .body {
+    margin-top: 40px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 56px;
+  }
+
+  .pager a {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .pager small {
+    color: var(--muted);
+  }
+
+  .pager strong {
+    font-weight: 600;
+  }
+
+  .pager .next {
+    text-align: right;
+  }
+
+  @media (max-width: 600px) {
+    .pager {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

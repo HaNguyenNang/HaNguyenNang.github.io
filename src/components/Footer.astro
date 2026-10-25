@@ -1,0 +1,60 @@
+---
+import { profile, activeSocials } from '../data/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container inner">
+    <p class="copy">© {year} {profile.name}. All rights reserved.</p>
+    <div class="links">
+      {profile.email && <a href={`mailto:${profile.email}`}>Email</a>}
+      {
+        activeSocials.map((s) => (
+          <a href={s.url} target="_blank" rel="noopener">
+            {s.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 48px;
+    border-top: 1px solid var(--line);
+  }
+
+  .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    font-size: 0.9rem;
+  }
+
+  .copy {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .links a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .links a:hover {
+    color: var(--accent);
+  }
+</style>

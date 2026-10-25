@@ -1,0 +1,76 @@
+---
+// Lọc các phần tử con của [data-filter-target] theo thuộc tính data-<attr> (giá trị ngăn cách bởi "|").
+interface Props {
+  options: string[];
+  attr: string;
+  prefix?: string;
+}
+
+const { options, attr, prefix = '' } = Astro.props;
+---
+
+{
+  options.length > 1 && (
+    <div class="filter" data-attr={attr}>
+      <button class="active" data-value="">
+        Tất cả
+      </button>
+      {options.map((o) => (
+        <button data-value={o}>
+          {prefix}
+          {o}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLElement>('.filter').forEach((bar) => {
+    const attr = bar.dataset.attr!;
+    const target = document.querySelector('[data-filter-target]');
+    bar.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button');
+      if (!btn || !target) return;
+      bar.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b === btn));
+      const value = btn.dataset.value!;
+      target.querySelectorAll<HTMLElement>(`[data-${attr}]`).forEach((el) => {
+        const values = (el.dataset[attr] || '').split('|');
+        el.hidden = !!value && !values.includes(value);
+      });
+    });
+  });
+</script>
+
+<style>
+  .filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .filter button {
+    font-family: var(--font);
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 6px 16px;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+
+  .filter button:hover {
+    color: var(--text);
+    border-color: var(--line-strong);
+  }
+
+  .filter button.active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>

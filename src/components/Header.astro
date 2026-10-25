@@ -1,0 +1,179 @@
+---
+import { profile } from '../data/profile';
+import { url } from '../data/utils';
+
+const nav = [
+  { label: 'Trang chủ', href: '/' },
+  { label: 'Dự án', href: '/games/' },
+  { label: 'Blog', href: '/blog/' },
+  { label: 'Giới thiệu', href: '/about/' },
+];
+
+const path = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a href={url('/')} class="logo">
+      <span class="mark">{profile.initials}</span>
+      <span class="logo-text">{profile.name}</span>
+    </a>
+
+    <button class="menu-btn" aria-label="Mở menu" aria-expanded="false" aria-controls="site-nav">
+      <span></span><span></span>
+    </button>
+
+    <nav id="site-nav">
+      {
+        nav.map((item) => (
+          <a href={url(item.href)} class:list={['nav-link', { active: isActive(item.href) }]}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
+  const nav = document.getElementById('site-nav');
+  btn?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('open');
+    btn.classList.toggle('open', !!open);
+    btn.setAttribute('aria-expanded', String(!!open));
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(12, 17, 26, 0.82);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .mark {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+  }
+
+  nav {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-link {
+    position: relative;
+    font-size: 0.94rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 8px 14px;
+    transition: color 0.2s;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--text);
+  }
+
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: 42px;
+    height: 42px;
+    padding: 0 10px;
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .menu-btn span {
+    display: block;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform 0.2s;
+  }
+
+  .menu-btn.open span:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+
+  .menu-btn.open span:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  @media (max-width: 720px) {
+    .menu-btn {
+      display: flex;
+    }
+
+    nav {
+      display: none;
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      padding: 8px 16px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+
+    nav.open {
+      display: flex;
+    }
+
+    .nav-link {
+      padding: 12px 0;
+    }
+
+    .nav-link.active::after {
+      left: 0;
+      right: auto;
+      width: 24px;
+    }
+  }
+</style>

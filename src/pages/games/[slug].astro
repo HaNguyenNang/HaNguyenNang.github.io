@@ -1,0 +1,253 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getGames, url, formatDate } from '../../data/utils';
+
+export async function getStaticPaths() {
+  const games = await getGames();
+  return games.map((game) => ({ params: { slug: game.id }, props: { game } }));
+}
+
+const { game } = Astro.props;
+const { title, description, genres, platforms, role, tools, releaseDate, cover, color, play, aspect, links } =
+  game.data;
+const { Content } = await render(game);
+---
+
+<Base title={title} description={description} image={cover}>
+  <div class="container">
+    <div class="page-head">
+      <a href={url('/games/')} class="back">← Tất cả dự án</a>
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </div>
+
+    <section class="play-section">
+      <div class="player" style={`--aspect:${aspect};--c:${color}`} data-src={play ? url(play) : undefined}>
+        <div class="cover">
+          {cover && <img src={url(cover)} alt="" />}
+          {
+            play ? (
+              <button class="btn start">▶ Chơi ngay</button>
+            ) : (
+              !cover && <span class="placeholder">{title}</span>
+            )
+          }
+        </div>
+      </div>
+      {
+        play && (
+          <div class="player-tools">
+            <span class="muted">Nhấp vào khung game để điều khiển bằng bàn phím.</span>
+            <button class="btn ghost fullscreen">Toàn màn hình</button>
+          </div>
+        )
+      }
+    </section>
+
+    <section class="detail">
+      <article class="prose">
+        <Content />
+      </article>
+
+      <aside class="card info">
+        <dl>
+          {
+            role && (
+              <div>
+                <dt>Vai trò</dt>
+                <dd>{role}</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt>Thể loại</dt>
+            <dd>{genres.join(', ')}</dd>
+          </div>
+          <div>
+            <dt>Nền tảng</dt>
+            <dd>{platforms.join(', ')}</dd>
+          </div>
+          {
+            tools.length > 0 && (
+              <div>
+                <dt>Công nghệ</dt>
+                <dd>{tools.join(', ')}</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt>Phát hành</dt>
+            <dd>{formatDate(releaseDate)}</dd>
+          </div>
+        </dl>
+        {
+          links.length > 0 && (
+            <div class="links">
+              {links.map((l) => (
+                <a href={l.url} class="btn ghost" target="_blank" rel="noopener">
+                  {l.label} ↗
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </aside>
+    </section>
+  </div>
+</Base>
+
+<script>
+  const player = document.querySelector<HTMLElement>('.player[data-src]');
+  const start = () => {
+    if (!player || player.querySelector('iframe')) return;
+    // Chỉ tải game khi người xem bấm "Chơi ngay" — bản build WebGL thường nặng.
+    const iframe = document.createElement('iframe');
+    iframe.src = player.dataset.src!;
+    iframe.title = 'Game';
+    iframe.allow = 'autoplay; fullscreen; gamepad';
+    iframe.allowFullscreen = true;
+    player.replaceChildren(iframe);
+    iframe.focus();
+  };
+
+  player?.querySelector('.start')?.addEventListener('click', start);
+  document.querySelector('.fullscreen')?.addEventListener('click', () => {
+    start();
+    player?.requestFullscreen?.();
+  });
+</script>
+
+<style>
+  .play-section {
+    padding-top: 32px;
+    padding-bottom: 24px;
+  }
+
+  .player {
+    position: relative;
+    aspect-ratio: var(--aspect);
+    max-height: 80vh;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--c) 30%, var(--surface-2)), var(--surface));
+  }
+
+  .player:fullscreen {
+    border: none;
+    border-radius: 0;
+    max-height: none;
+  }
+
+  .player :global(iframe) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    background: #000;
+  }
+
+  .cover {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .cover img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .placeholder {
+    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .start {
+    position: relative;
+    font-size: 1.05rem;
+    padding: 14px 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .player-tools {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+  }
+
+  .player-tools .btn {
+    padding: 8px 16px;
+    font-size: 0.88rem;
+  }
+
+  .detail {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 56px;
+    align-items: start;
+    padding-top: 24px;
+  }
+
+  .prose > :global(:first-child) {
+    margin-top: 0;
+  }
+
+  .info {
+    padding: 8px 24px 24px;
+    position: sticky;
+    top: 88px;
+  }
+
+  dl {
+    margin: 0;
+  }
+
+  dl div {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  dt {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  dd {
+    margin: 4px 0 0;
+    font-weight: 500;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 860px) {
+    .detail {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .info {
+      position: static;
+      order: -1;
+    }
+  }
+</style>

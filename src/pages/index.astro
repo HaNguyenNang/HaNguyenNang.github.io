@@ -1,0 +1,257 @@
+---
+import Base from '../layouts/Base.astro';
+import Avatar from '../components/Avatar.astro';
+import GameCard from '../components/GameCard.astro';
+import PostCard from '../components/PostCard.astro';
+import { profile } from '../data/profile';
+import { url, getGames, getPosts } from '../data/utils';
+
+const games = await getGames();
+const posts = await getPosts();
+const featuredGames = [...games.filter((g) => g.data.featured), ...games.filter((g) => !g.data.featured)].slice(0, 3);
+const latestPosts = posts.slice(0, 3);
+
+const stats = [
+  { value: `${profile.yearsOfExperience}+`, label: 'Năm kinh nghiệm' },
+  { value: String(games.length).padStart(2, '0'), label: 'Dự án game' },
+  { value: String(posts.length).padStart(2, '0'), label: 'Bài viết' },
+];
+---
+
+<Base>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <span class="eyebrow">{profile.title} · {profile.focus}</span>
+        <h1>{profile.name}</h1>
+        <p class="tagline">{profile.tagline}</p>
+        <div class="cta">
+          <a href={url('/games/')} class="btn">Xem dự án</a>
+          {
+            profile.cv ? (
+              <a href={url(profile.cv)} class="btn ghost" download>
+                Tải CV
+              </a>
+            ) : (
+              <a href={url('/about/')} class="btn ghost">
+                Giới thiệu
+              </a>
+            )
+          }
+        </div>
+        <dl class="stats">
+          {
+            stats.map((s) => (
+              <div>
+                <dt>{s.label}</dt>
+                <dd>{s.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+      <div class="hero-art">
+        <Avatar size={400} eager />
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">01 — Dự án</span>
+          <h2>Game nổi bật</h2>
+        </div>
+        {games.length > 0 && <a href={url('/games/')} class="link-arrow">Tất cả dự án →</a>}
+      </div>
+      {
+        featuredGames.length ? (
+          <div class="grid">
+            {featuredGames.map((game) => (
+              <GameCard game={game} />
+            ))}
+          </div>
+        ) : (
+          <div class="card empty">
+            <h3>Dự án đang được cập nhật</h3>
+            <p class="muted">Các sản phẩm sẽ sớm xuất hiện tại đây.</p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">02 — Blog</span>
+          <h2>Bài viết mới nhất</h2>
+        </div>
+        {posts.length > 0 && <a href={url('/blog/')} class="link-arrow">Tất cả bài viết →</a>}
+      </div>
+      {
+        latestPosts.length ? (
+          <div class="grid">
+            {latestPosts.map((post) => (
+              <PostCard post={post} />
+            ))}
+          </div>
+        ) : (
+          <div class="card empty">
+            <h3>Bài viết đang được chuẩn bị</h3>
+            <p class="muted">Kiến thức và kinh nghiệm làm game sẽ được chia sẻ tại đây.</p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="card contact">
+        <div>
+          <span class="eyebrow">03 — Liên hệ</span>
+          <h2>Cùng hợp tác trong dự án tiếp theo</h2>
+          <p class="muted">
+            Tôi luôn sẵn sàng trao đổi về cơ hội công việc, dự án hợp tác hoặc đơn giản là thảo luận về làm game.
+          </p>
+        </div>
+        <div class="contact-actions">
+          {profile.email && <a href={`mailto:${profile.email}`} class="btn">Gửi email</a>}
+          <a href={url('/about/')} class="btn ghost">Thông tin liên hệ</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding: 88px 0 56px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    align-items: center;
+    gap: 64px;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 6.5vw, 4.4rem);
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    margin: 18px 0 22px;
+  }
+
+  .tagline {
+    font-size: 1.12rem;
+    color: var(--muted);
+    max-width: 540px;
+    margin: 0 0 32px;
+  }
+
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .stats {
+    display: flex;
+    gap: 40px;
+    margin: 48px 0 0;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+
+  .stats div {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .stats dt {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .stats dd {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+
+  .hero-art {
+    display: flex;
+    justify-content: center;
+    padding: 0 14px 14px 0;
+  }
+
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 32px;
+    padding: 44px;
+    background: linear-gradient(120deg, var(--surface-2), var(--surface) 60%);
+  }
+
+  .contact h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    margin: 8px 0 10px;
+  }
+
+  .contact p {
+    margin: 0;
+    max-width: 560px;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  @media (max-width: 860px) {
+    .hero {
+      padding-top: 40px;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .hero-art {
+      order: -1;
+      justify-content: flex-start;
+    }
+
+    .hero-art :global(.avatar) {
+      width: min(300px, 80vw);
+    }
+
+    .contact {
+      grid-template-columns: 1fr;
+      padding: 28px 24px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stats {
+      gap: 24px;
+    }
+
+    .stats dd {
+      font-size: 1.6rem;
+    }
+
+    .stats dt {
+      font-size: 0.78rem;
+    }
+  }
+</style>
