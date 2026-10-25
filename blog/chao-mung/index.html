@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="vi"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Chuẩn hóa input di chuyển trong Unity | Nguyễn Năng Hà</title><meta name="description" content="Bài viết mẫu — một lỗi nhỏ nhưng phổ biến khiến nhân vật di chuyển chéo nhanh hơn đi thẳng, và cách khắc phục."><link rel="canonical" href="https://hanguyennang.github.io/blog/chao-mung/"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta property="og:type" content="website"><meta property="og:title" content="Chuẩn hóa input di chuyển trong Unity | Nguyễn Năng Hà"><meta property="og:description" content="Bài viết mẫu — một lỗi nhỏ nhưng phổ biến khiến nhân vật di chuyển chéo nhanh hơn đi thẳng, và cách khắc phục."><meta property="og:url" content="https://hanguyennang.github.io/blog/chao-mung/"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/about.CVP2MKuu.css">
+<style>.post[data-astro-cid-4sn4zg3r]{max-width:780px}.meta[data-astro-cid-4sn4zg3r]{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:.8rem;color:var(--mist);margin-top:16px}.tags[data-astro-cid-4sn4zg3r]{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}.cover[data-astro-cid-4sn4zg3r]{width:100%;margin-top:40px;border:1px solid var(--line);border-radius:var(--radius)}.body[data-astro-cid-4sn4zg3r]{margin-top:40px;padding-top:8px;border-top:1px solid var(--line)}.pager[data-astro-cid-4sn4zg3r]{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:56px}.pager[data-astro-cid-4sn4zg3r] a[data-astro-cid-4sn4zg3r]{padding:18px 20px;display:flex;flex-direction:column;gap:4px}.pager[data-astro-cid-4sn4zg3r] small[data-astro-cid-4sn4zg3r]{color:var(--muted)}.pager[data-astro-cid-4sn4zg3r] strong[data-astro-cid-4sn4zg3r]{font-weight:600}.pager[data-astro-cid-4sn4zg3r] .next[data-astro-cid-4sn4zg3r]{text-align:right}@media(max-width:600px){.pager[data-astro-cid-4sn4zg3r]{grid-template-columns:1fr}}
+</style></head> <body> <header class="site-header" data-astro-cid-3ef6ksr2> <div class="container bar" data-astro-cid-3ef6ksr2> <a href="/" class="logo" data-astro-cid-3ef6ksr2> <span class="mark" data-astro-cid-3ef6ksr2>NH</span> <span class="logo-text" data-astro-cid-3ef6ksr2>Nguyễn Năng Hà</span> </a> <button class="menu-btn" aria-label="Mở menu" aria-expanded="false" aria-controls="site-nav" data-astro-cid-3ef6ksr2> <span data-astro-cid-3ef6ksr2></span><span data-astro-cid-3ef6ksr2></span> </button> <nav id="site-nav" data-astro-cid-3ef6ksr2> <a href="/" class="nav-link" data-astro-cid-3ef6ksr2> Trang chủ </a><a href="/games/" class="nav-link" data-astro-cid-3ef6ksr2> Dự án </a><a href="/blog/" class="nav-link active" data-astro-cid-3ef6ksr2> Blog </a><a href="/about/" class="nav-link" data-astro-cid-3ef6ksr2> Giới thiệu </a> </nav> </div> </header> <script type="module">const e=document.querySelector(".menu-btn"),n=document.getElementById("site-nav");e?.addEventListener("click",()=>{const t=n?.classList.toggle("open");e.classList.toggle("open",!!t),e.setAttribute("aria-expanded",String(!!t))});</script>  <main>  <article class="container post" data-astro-cid-4sn4zg3r> <header class="page-head" data-astro-cid-4sn4zg3r> <a href="/blog/" class="back" data-astro-cid-4sn4zg3r>← Tất cả bài viết</a> <div class="meta" data-astro-cid-4sn4zg3r> <time datetime="2026-10-25T00:00:00.000Z" data-astro-cid-4sn4zg3r>25/10/2026</time> <span data-astro-cid-4sn4zg3r>·</span> <span data-astro-cid-4sn4zg3r>1 phút đọc</span> </div> <h1 data-astro-cid-4sn4zg3r>Chuẩn hóa input di chuyển trong Unity</h1> <p data-astro-cid-4sn4zg3r>Bài viết mẫu — một lỗi nhỏ nhưng phổ biến khiến nhân vật di chuyển chéo nhanh hơn đi thẳng, và cách khắc phục.</p> <div class="tags" data-astro-cid-4sn4zg3r><span class="tag" data-astro-cid-4sn4zg3r>Unity</span><span class="tag" data-astro-cid-4sn4zg3r>C#</span><span class="tag" data-astro-cid-4sn4zg3r>Gameplay</span></div> </header>  <div class="prose body" data-astro-cid-4sn4zg3r> <p>Đây là bài viết mẫu, giúp bạn xem trước cách blog hiển thị đoạn code, trích dẫn và bảng biểu.</p>
+<h2 id="vấn-đề">Vấn đề</h2>
+<p>Khi đọc input theo hai trục và đưa thẳng vào vector di chuyển, độ dài vector khi đi chéo là √2 ≈ 1.41. Kết quả là nhân vật <strong>di chuyển chéo nhanh hơn khoảng 41%</strong> so với đi thẳng.</p>
+<h2 id="cách-khắc-phục">Cách khắc phục</h2>
+<pre class="astro-code one-dark-pro" style="background-color:#282c34;color:#abb2bf; overflow-x: auto;" tabindex="0" data-language="csharp"><code><span class="line"><span style="color:#C678DD">using</span><span style="color:#E5C07B"> UnityEngine</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#C678DD">public</span><span style="color:#C678DD"> class</span><span style="color:#E5C07B"> PlayerMovement</span><span style="color:#ABB2BF"> : </span><span style="color:#E5C07B">MonoBehaviour</span></span>
+<span class="line"><span style="color:#ABB2BF">{</span></span>
+<span class="line"><span style="color:#ABB2BF">    [</span><span style="color:#E5C07B">SerializeField</span><span style="color:#ABB2BF">] </span><span style="color:#C678DD">private</span><span style="color:#C678DD"> float</span><span style="color:#E06C75"> speed</span><span style="color:#56B6C2"> =</span><span style="color:#D19A66"> 5f</span><span style="color:#ABB2BF">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#C678DD">    private</span><span style="color:#C678DD"> void</span><span style="color:#61AFEF"> Update</span><span style="color:#ABB2BF">()</span></span>
+<span class="line"><span style="color:#ABB2BF">    {</span></span>
+<span class="line"><span style="color:#C678DD">        var</span><span style="color:#E06C75"> input</span><span style="color:#56B6C2"> =</span><span style="color:#ABB2BF"> new </span><span style="color:#E5C07B">Vector2</span><span style="color:#ABB2BF">(</span><span style="color:#E5C07B">Input</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">GetAxisRaw</span><span style="color:#ABB2BF">(</span><span style="color:#98C379">"Horizontal"</span><span style="color:#ABB2BF">), </span><span style="color:#E5C07B">Input</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">GetAxisRaw</span><span style="color:#ABB2BF">(</span><span style="color:#98C379">"Vertical"</span><span style="color:#ABB2BF">));</span></span>
+<span class="line"><span style="color:#E5C07B">        transform</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">Translate</span><span style="color:#ABB2BF">(</span><span style="color:#E5C07B">Vector2</span><span style="color:#ABB2BF">.</span><span style="color:#61AFEF">ClampMagnitude</span><span style="color:#ABB2BF">(</span><span style="color:#E06C75">input</span><span style="color:#ABB2BF">, </span><span style="color:#D19A66">1f</span><span style="color:#ABB2BF">) </span><span style="color:#56B6C2">*</span><span style="color:#E06C75"> speed</span><span style="color:#56B6C2"> *</span><span style="color:#E5C07B"> Time</span><span style="color:#ABB2BF">.</span><span style="color:#E5C07B">deltaTime</span><span style="color:#ABB2BF">);</span></span>
+<span class="line"><span style="color:#ABB2BF">    }</span></span>
+<span class="line"><span style="color:#ABB2BF">}</span></span></code></pre>
+<blockquote>
+<p>Dùng <code>ClampMagnitude</code> thay cho <code>normalized</code> để vẫn giữ được input analog (joystick đẩy nhẹ thì đi chậm).</p>
+</blockquote>
+<h2 id="so-sánh">So sánh</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Cách làm</th><th>Đi chéo</th><th>Hỗ trợ analog</th></tr></thead><tbody><tr><td>Không xử lý</td><td>Nhanh hơn</td><td>Có</td></tr><tr><td><code>normalized</code></td><td>Đúng</td><td>Không</td></tr><tr><td><code>ClampMagnitude</code></td><td>Đúng</td><td>Có</td></tr></tbody></table> </div> <nav class="pager" data-astro-cid-4sn4zg3r> <span data-astro-cid-4sn4zg3r></span>  </nav> </article>  </main> <footer class="site-footer" data-astro-cid-sz7xmlte> <div class="container inner" data-astro-cid-sz7xmlte> <p class="copy" data-astro-cid-sz7xmlte>© 2026 Nguyễn Năng Hà. All rights reserved.</p> <div class="links" data-astro-cid-sz7xmlte>  <a href="https://github.com/HaNguyenNang" target="_blank" rel="noopener" data-astro-cid-sz7xmlte> GitHub </a> </div> </div> </footer>  </body></html> 
